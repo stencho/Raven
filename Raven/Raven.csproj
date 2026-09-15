@@ -88,6 +88,15 @@
     <PropertyGroup>
         <IsLinux Condition="$([MSBuild]::IsOSPlatform('Linux'))">true</IsLinux>
     </PropertyGroup>
+    
+    <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+      <PlatformTarget>x64</PlatformTarget>
+      <Optimize>true</Optimize>
+    </PropertyGroup>
+    
+    <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+      <PlatformTarget>x64</PlatformTarget>
+    </PropertyGroup>
     <!-- <Target Name="PostBuild" AfterTargets="Build"> 
         <Exec Condition="'$(IsLinux)' == 'true'" Command="./post_build_linux.sh" />
     </Target> 
