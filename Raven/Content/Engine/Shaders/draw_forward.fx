@@ -81,7 +81,7 @@ float4 MainPS(VSO input) : SV_Target0 {
     float4 rgba = tex2D(DiffuseSampler, input.TexCoord);
     
     // apply tint
-    rgba *= tint;
+    rgba.rgb *= tint.rgb;
     
     // get screen pos for depth clip
 	float2 ndc = input.ViewPosition.xy / input.ViewPosition.w;	
@@ -100,14 +100,14 @@ float4 MainPS(VSO input) : SV_Target0 {
     lighting.rgb = Directional(directional_light_color, Normal, directional_light_dir, inverse_view);
       
     // dim with opacity    
-    lighting *= rgba.a * opacity;	
-    
+    lighting.rgb *= rgba.a * opacity;
+        
     // fullbright mode toggle		
 	if (fullbright) { 
         rgba.rgb = saturate(rgba.rgb);	  
            
 	} else { // final color + lighting blend
-        rgba.rgb = (lighting.rgb * 0.2) + saturate(rgba.rgb * lighting.rgb);
+        rgba.rgb = saturate(rgba.rgb * lighting.rgb);
     }
 	
     // final opacity blend        
