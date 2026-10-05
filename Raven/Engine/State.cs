@@ -174,7 +174,7 @@ public static class State {
         gvars.add_gvar("r_resolution_scale", gvar_data_type.FLOAT, 1f, true, "Set the 3D render output buffer resolution scale.\n0.5 will half the resolution, making things pixelated, 2.0 will double the resolution.\nThis will not affect the 2D layer or backbuffer.\nGoing above 1.0 will not really do anything due to how deferred rendering works.\n");
         
         gvars.add_gvar("r_vsync", gvar_data_type.BOOL, true, true, "Sync vertical refresh to display.");
-        gvars.add_gvar("r_frame_limit", gvar_data_type.INT, 60, true, "Sets the render thread's frame rate limit.");
+        gvars.add_gvar("r_frame_limit", gvar_data_type.INT, -1, true, "Sets the render thread's frame rate limit.");
         gvars.add_gvar("r_interpolation", gvar_data_type.BOOL, true, false);
         gvars.add_gvar("r_field_of_view", gvar_data_type.FLOAT, 110f, true, "Main camera field of view.");
         
@@ -612,7 +612,7 @@ public static class Clock {
         public Action update_action { get; set; }
         public Action post_update_action { get; set; }
         
-        public float tick_rate { get; set; } = 60f;
+        public float tick_rate { get; set; } = gvars.get_float("g_tick_rate");
         public double goal_time => 1000.0 / tick_rate;
         
         private double _delta_ms_actual = 0.0;
