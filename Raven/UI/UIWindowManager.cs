@@ -1,6 +1,4 @@
-﻿
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -334,7 +332,7 @@ namespace Raven.UI  {
             
         }
         
-        void force_focus(IUIForm form) {
+        public void force_focus(IUIForm form) {
             int windex = -1;
             int sindex = -1;
 
@@ -508,6 +506,16 @@ namespace Raven.UI  {
             }
             return null;
         }
+        
+        public IUIForm find_top_visible_window() {
+            foreach (var w in windows) {
+                if (w == null || w is not UIWindow) continue;
+                if (w.visible) {
+                    return w;
+                }
+            }
+            return null;
+        }
 
         public IUIForm focused_window_at_update_time = null;
         bool mouse_holding_window => window_on_mouse != null;
@@ -522,11 +530,9 @@ namespace Raven.UI  {
 
             bool hit_any = false;
 
-            if (!MouseWatcher.MouseLocked && mouse_was_locked) {
-                State.UI.restore_focus();
-            }
-            if (!MouseWatcher.MouseLocked)
-                State.UI.store_focus();
+            if (!MouseWatcher.MouseLocked && mouse_was_locked) restore_focus();
+            if (!MouseWatcher.MouseLocked) store_focus();
+            
             //just locked mouse
             if (MouseWatcher.MouseLocked && !mouse_was_locked) {
                 //stored_focus = get_focused_window();
@@ -694,6 +700,9 @@ namespace Raven.UI  {
             if (State.engine_binds.just_pressed("exit")) {
                 if (focused_window_at_update_time != null && focused_window_at_update_time is UIWindow && !focused_window_at_update_time.dialog) {
                     (focused_window_at_update_time as UIWindow).hide();
+                    
+                    force_focus(find_top_visible_window());
+
                 }
             }
   

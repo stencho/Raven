@@ -181,7 +181,11 @@ namespace Raven.UI {
             if (gvars.get_bool("ui_window_middle_click_close")) {
                 if (mid_mdown && !mid_mdown_p && top_of_mouse_stack && _top_bar_mouse_over) _top_bar_mouse_down = true;
                 if (!mid_mdown && mid_mdown_p && !_top_bar_mouse_over) _top_bar_mouse_down = false;
-                if (!mid_mdown && mid_mdown_p && top_of_mouse_stack && _top_bar_mouse_over) hide();
+                if (!mid_mdown && mid_mdown_p && top_of_mouse_stack && _top_bar_mouse_over) {
+                    hide();
+                    
+                    window_manager.force_focus(window_manager.find_top_visible_window());
+                }
             }
 
             if (show_hide_button) {
@@ -191,7 +195,10 @@ namespace Raven.UI {
                     _hide_mouse_down = false;
                 if (!mdown && mdown_p && top_of_mouse_stack && _hide_mouse_down && _hide_mouse_over) { // released click, over hide. hide window
                     _hide_mouse_over_fade.Reset(0f);
-                    hide(); 
+                    hide();
+                    
+                    window_manager.force_focus(window_manager.find_top_visible_window());
+
                     _hide_mouse_down = false;
                 }
                 
