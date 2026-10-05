@@ -124,10 +124,10 @@ namespace Raven.Console {
             }
         }
 
-        public static volatile List<log_data> data = new List<log_data>();
+        public static volatile ConcurrentList<log_data> data = new ConcurrentList<log_data>();
 
         public static void clear() {
-            data = new List<log_data>();
+            data = new ConcurrentList<log_data>();
         }
 
         public static void write(log_level level, string text) {

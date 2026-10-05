@@ -16,6 +16,11 @@ public class ConcurrentList<T> : IEnumerable {
             list.Add(item);
         }
     }
+    public void Insert(int position, T item) {
+        lock (_lock) {
+            list.Insert(position, item);
+        }
+    }
     
     public void Remove(T item) {
         lock (_lock) {
