@@ -27,7 +27,6 @@ public static class Threads {
     public static string list_all_active_threads {
         get {
             string output = "";
-            Prune();
             
             var arr = threads.ToArray().OrderBy(a => a.Value.start_time.Ticks).ToArray();
             foreach (var kvp in arr) {
@@ -107,16 +106,12 @@ public static class Threads {
             CallbackAction = callback_action;
         }
     }
-
-    private const bool use_pruner = false;
     
     public static void Initialize() {
         ThreadPool.SetMinThreads(MaxTasks,MaxTasks);
         ThreadPool.SetMaxThreads(MaxTasks,MaxTasks);
         
         StartTask($"Thread Dispatcher", DispatcherThread, cancellation_token_source.Token);
-        if (use_pruner)
-            StartTask($"ThreadInfo Pruner", ThreadInfoPruner, cancellation_token_source.Token);
     }   
     
     public static void Request(ThreadRequestPacket request, [CallerFilePath] string caller_filename = "", [CallerMemberName] string member_name = "") {
@@ -144,7 +139,7 @@ public static class Threads {
                 goto possibly_still_items_in_queue;
             }
 
-            if (!use_pruner) Prune();
+            Prune();
             
             Thread.Sleep(dispatch_wait);
         }
@@ -155,15 +150,6 @@ public static class Threads {
             if (threads[t].Finished) {
                 threads.TryRemove(t, out _);
             }
-        }
-    }
-    
-    private async static void ThreadInfoPruner() {
-        while (State.running) {
-            Prune();
-
-            //Debug.WriteLine("Attempted Prune");
-            Thread.Sleep(prune_wait_ms);
         }
     }
 
