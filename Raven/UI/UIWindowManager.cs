@@ -346,7 +346,9 @@ namespace Raven.UI  {
                 windows[o].top_of_mouse_stack = false;
 
                 for (int s = 0; s < windows[o].subforms.Count; s++) {
-                    sindex = s;
+                    if (windows[o].subforms[s] == form)
+                        sindex = s;
+                    
                     windows[o].subforms[s].has_focus = false;
                     windows[o].subforms[s].top_of_mouse_stack = false;
                 }
@@ -358,7 +360,6 @@ namespace Raven.UI  {
                 if (sindex >= 0 && windows[windex].subforms.Count > 0)
                     windows[windex].subforms[sindex].has_focus = true;
             }
-             
         }
 
 
