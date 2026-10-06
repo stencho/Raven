@@ -87,7 +87,7 @@ public partial class MenuStrip : IUIForm {
         foreach (var button in menu_buttons) {
             button.position = Vector2i.Up + (Vector2i.Right * x);
             button.draw();
-            x = button.size.X + 3;
+            x += button.size.X ;
         }
         
         draw_all_subforms();
