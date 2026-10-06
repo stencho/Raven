@@ -59,6 +59,10 @@ float3 Hash33(float3 p)
     return frac((p.xxy + p.yzz) * p.zyx);
 }
 
+float hash(float2 p) {
+     return frac(sin(dot(p, float2(12.9898, 78.233))) * 43758.5453);
+ }
+
 SkyboxPSO Skybox(VSO input) {
     SkyboxPSO output = (SkyboxPSO)0;
         
@@ -117,7 +121,11 @@ SkyboxPSO Skybox(VSO input) {
     float distance_from_tip = 1 - y_all_pos;
       
     rgba.rgb = slerp(sky_color, atmos * (0.5 + (midday_dist * 0.5)), distance_from_tip, open_sky, 1);
-    //rgba.rgb = slerp(atmos, dark, distance_from_tip, horizon_point, dark_point);   
+    
+    // Gradient dithering to reduce banding    
+    float dither = (hash(input.view_pos) - 0.5) / 255.0;
+    
+    rgba.rgb += dither;
      
     output.Lighting.rgb = saturate(rgba.rgb + (star * clamp(midday_dist - 0.6, 0, 1)));
     output.Lighting.a = 1;
