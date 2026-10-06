@@ -1,11 +1,13 @@
 #include "lib/general.fx"
 #include "lib/lighting.fx"
 
-SamplerState DiffuseSampler : register(s0) { 
+Texture2D DIFFUSE;
+SamplerState DIFFUSESampler : register(s0) { 
     texture = <DIFFUSE>; 
 };
 
-SamplerState DepthSampler : register(s6) = sampler_state {
+Texture2D DEPTH;
+SamplerState DEPTHSampler : register(s6) = sampler_state {
     texture = <DEPTH>;
 	MINFILTER = POINT;
 	MAGFILTER = POINT;
@@ -77,8 +79,8 @@ float opacity = 1.0;
 bool fullbright = false;
 bool ignore_depth = false;
 
-float4 MainPS(VSO input) : SV_Target0 {    	
-    float4 rgba = tex2D(DiffuseSampler, input.TexCoord);
+float4 MainPS(VSO input) : SV_TARGET {    	
+    float4 rgba = sample2D(DIFFUSE, input.TexCoord);
     
     // apply tint
     rgba.rgb *= tint.rgb;
@@ -89,7 +91,7 @@ float4 MainPS(VSO input) : SV_Target0 {
     screenUV.y = 1.0f - (ndc.y * 0.5f + 0.5f);     
 	
 	// depth clip (it goes it goes it goes)
-	float3 depth = tex2D(DepthSampler, screenUV).xyz;		    
+	float3 depth = sample2D(DEPTH, screenUV).xyz;		    
     if (!ignore_depth && (input.Depth.x/input.Depth.y > depth.x / depth.y)) { clip(-1); }
         	
     // build lighting

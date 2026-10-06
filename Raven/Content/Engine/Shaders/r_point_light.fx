@@ -183,7 +183,7 @@ VSO VS(VSI input)
 	return output;
 }
 
-float4 PS(VSO input) : COLOR0
+float4 PS(VSO input) : SV_TARGET
 {
 	input.ScreenPosition.xy /= input.ScreenPosition.w;
 

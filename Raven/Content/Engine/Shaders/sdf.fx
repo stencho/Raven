@@ -13,14 +13,15 @@ float4 inside_color;
 float4 outline_color;
 float4 outside_color;
 
-sampler2D SDFs : register(s0) {	
-	texture = <SDFTEX>;
+Texture2D SDF;
+sampler2D SDFSampler : register(s0) {	
+	texture = <SDF>;
 	ADDRESSU = WRAP;
 	ADDRESSV = WRAP;
 };
  
-float4 PS(float4 position : SV_Position, float4 color : COLOR0, float2 TexCoords : TEXCOORD0) : COLOR0 {
-	float pixel = (tex2D(SDFs, TexCoords).r);	
+float4 PS(float4 position : SV_Position, float4 color : COLOR0, float2 TexCoords : TEXCOORD0) : SV_TARGET {
+	float pixel = (sample2D(SDF, TexCoords).r);	
 	float4 rgba = 0;
 
 	//Map uninverted and inside	

@@ -9,20 +9,17 @@
 
 matrix WorldViewProjection;
 
-struct VertexShaderInput
-{
+struct VertexShaderInput {
     float4 Position : POSITION0;
     float4 Color : COLOR0;
 };
 
-struct VertexShaderOutput
-{
+struct VertexShaderOutput {
     float4 Position : SV_POSITION;
     float4 Color : COLOR0;
 };
 
-VertexShaderOutput MainVS(in VertexShaderInput input)
-{
+VertexShaderOutput MainVS(in VertexShaderInput input) {
     VertexShaderOutput output = (VertexShaderOutput)0;
 
     output.Position = mul(input.Position, WorldViewProjection);
@@ -31,8 +28,7 @@ VertexShaderOutput MainVS(in VertexShaderInput input)
     return output;
 }
 
-float4 MainPS(VertexShaderOutput input) : COLOR
-{
+float4 MainPS(VertexShaderOutput input) : SV_TARGET {
     return input.Color;
 }
 

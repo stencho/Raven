@@ -9,7 +9,7 @@ struct VertexShaderOutput
 	float2 TextureCoordinates : TEXCOORD0;
 };
 
-float4 MainPS(VertexShaderOutput input) : COLOR {
+float4 MainPS(VertexShaderOutput input) : SV_TARGET {
 	float2 xy;
 
 	float2 minimum = position / resolution;

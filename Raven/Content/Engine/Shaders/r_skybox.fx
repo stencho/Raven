@@ -2,8 +2,6 @@
 
 static const float PI = acos(-1.0);
 
-sampler2D SkyboxLerpSampler = sampler_state { texture = <SkyboxLerp>; };
-
 struct VSI {
 	float4 Position : POSITION0;
 	float2 UV : TEXCOORD0;
@@ -15,8 +13,8 @@ struct VSO {
     float4 view_pos : TEXCOORD2;
 };
 struct SkyboxPSO {
-    float4 Diffuse : COLOR0;
-    float4 Lighting : COLOR1;
+    float4 Diffuse : SV_TARGET0;
+    float4 Lighting : SV_TARGET1;
 };
 
 float4 atmosphere_color;
@@ -83,7 +81,7 @@ SkyboxPSO Skybox(VSO input) {
     float3 atmos = (atmosphere_color.rgb);
     float3 dark = (max_sky_darkness.rgb);
         
-    float4 rgba = float4(1,1,1,1); // = tex2D(cubeS, input.UV);
+    float4 rgba = float4(1,1,1,1);
         
     float midday_dist = distance(day_position, 0.5) * 2;
                 

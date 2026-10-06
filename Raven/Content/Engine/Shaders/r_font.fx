@@ -39,7 +39,7 @@ VSO ScreenVS(VSI input) {
     return output;    
 }
 
-float4 MainPS(VSO input) : SV_Target0
+float4 MainPS(VSO input) : SV_TARGET
 {
     return input.Color;
 }

@@ -6,15 +6,13 @@ float LightClip;
 float FarClip;
 float3 light_pos;
 
-struct VertexShaderOutput
-{
+struct VertexShaderOutput {
     float4 Position : POSITION;
 	float4 depth : TEXCOORD0;
 	float4 world_pos : TEXCOORD1;
 };
 
-VertexShaderOutput VertexShaderFunction(float4 position : POSITION)
-{
+VertexShaderOutput VertexShaderFunction(float4 position : POSITION) {
 
     VertexShaderOutput output;
 	output.world_pos = mul(position, World);
@@ -24,16 +22,13 @@ VertexShaderOutput VertexShaderFunction(float4 position : POSITION)
     return output;
 }
 
-float4 PixelShaderFunction(VertexShaderOutput input) : COLOR0
-{
+float4 PixelShaderFunction(VertexShaderOutput input) : SV_TARGET {
 	float d = (input.depth.z / input.depth.w);
     return float4(d,d,d,1);
 }
 
-technique Technique1
-{
-    pass Pass1
-    {
+technique Technique1{
+    pass Pass1 {        
         VertexShader = compile VS_SHADERMODEL VertexShaderFunction();
 		PixelShader = compile PS_SHADERMODEL PixelShaderFunction();
     }

@@ -72,10 +72,10 @@ struct VSO
 
 struct PSO
 {
-	float4 Diffuse : COLOR0;
-	float4 Normals : COLOR1;
-    float4 Depth : COLOR2;
-    float4 Lighting : COLOR3;
+	float4 Diffuse : SV_TARGET0;
+	float4 Normals : SV_TARGET1;
+    float Depth : SV_DEPTH;
+    float4 Lighting : SV_TARGET2;
 };
 
 float logzbuf(float z, float w)
@@ -237,8 +237,7 @@ PSO Diffuse(VSO input)
 
 	//output.Diffuse.rgba *= visible;
 
-    output.Depth.rgb = ( input.Depth.z);
-    output.Depth.a = 1;
+    output.Depth = input.Depth.z;
     
     return output ;
 };

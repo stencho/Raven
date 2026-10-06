@@ -1,13 +1,21 @@
 #include "lib/general.fx"
 
-SamplerState DIFFUSE : register(s0);
+Texture2D DIFFUSE;
+SamplerState DIFFUSESampler : register(s0) = sampler_state {
+    texture = <DIFFUSE>;
+	MINFILTER = POINT;
+	MAGFILTER = POINT;
+	MIPFILTER = POINT;
+	ADDRESSU = WRAP;
+	ADDRESSV = WRAP;
+}; 
 
 //SamplerState NORMAL : register(s1);
 //SamplerState SPECULAR : register(s2);
 //SamplerState EMISSIVE : register(s3);
 
 Texture2D DEPTH;
-SamplerState DepthSampler : register(s6) = sampler_state {
+SamplerState DEPTHSampler = sampler_state {
     texture = <DEPTH>;
 	MINFILTER = POINT;
 	MAGFILTER = POINT;
@@ -34,9 +42,9 @@ struct VSO {
 };
 
 struct PSO {
-    float4 Diffuse : COLOR0;
-    float4 Normals : COLOR1;
-    float4 Lighting : COLOR2;
+    float4 Diffuse :  SV_TARGET0;
+    float4 Normals :  SV_TARGET1;
+    float4 Lighting : SV_TARGET2;
 };
 
 matrix World;
@@ -45,8 +53,7 @@ matrix Projection;
 
 float3x3 WVIT;
 
-VSO MainVS(in VSI input)
-{
+VSO MainVS(in VSI input) {
 	VSO output = (VSO)0;
 	
 	float4x4 wvp = mul(World, mul(View, Projection));
@@ -80,7 +87,7 @@ float far_clip = 1000;
 PSO MainPS(VSO input) {
     PSO output = (PSO)0;
 
-    float4 rgba = tex2D(DIFFUSE, input.TexCoord);    
+    float4 rgba = sample2D(DIFFUSE, input.TexCoord);   
     		
     // get screen UV
 	float2 ndc = input.ViewPosition.xy / input.ViewPosition.w;	
@@ -88,7 +95,8 @@ PSO MainPS(VSO input) {
 	screenUV.y = 1.0f - (ndc.y * 0.5f + 0.5f); 
     				    
     // depth clip
-	float3 depth = tex2D(DepthSampler, screenUV).xyz;
+	float3 depth = sample2D(DEPTH, screenUV).xyz;
+	
     if (input.Depth.x/input.Depth.y > depth.x/depth.y) clip(-1);
             
     // configure outputs    

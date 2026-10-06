@@ -8,10 +8,10 @@ float LightClip;
 float3 LightDirection;
 float C;
 
-texture DiffuseMap;
+Texture2D Diffuse;
 sampler DiffuseSampler = sampler_state
 {
-	texture = <DiffuseMap>;
+	texture = <Diffuse>;
 	MINFILTER = POINT;
 	MAGFILTER = POINT;
 	MIPFILTER = POINT;
@@ -65,8 +65,8 @@ float3 pomn(float3 a, float3 p) {
 }
 
 
-float4 PS(VSO input) : COLOR0 {
-	if (tex2D(DiffuseSampler, input.TexCoord).a < 1) {clip(-1);}
+float4 PS(VSO input) : SV_TARGET {
+	if (sample2D(Diffuse, input.TexCoord).a < 1) {clip(-1);}
 	
 	input.WorldPosition /= input.WorldPosition.w;
 	//float depth = distance(input.WorldPosition.xyz, LightPosition.xyz) / LightClip;

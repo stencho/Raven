@@ -38,8 +38,8 @@ float2 fill_resolution;
 float2 bordered_resolution;
 float2 fill_position;
 
-sampler2D fill_sampler : register(s1)
-{
+Texture2D fill_texture;
+sampler2D fill_textureSampler : register(s1) = sampler_state {
     texture = <fill_texture>;
 	MINFILTER = POINT;
 	MAGFILTER = POINT;
@@ -55,10 +55,7 @@ struct VertexShaderOutput
     float2 UV : TEXCOORD0;
 };
 
-float shortest_line_distance(int2 pixel) {
-}
-
-float4 MainPS(VertexShaderOutput input) : COLOR {    
+float4 MainPS(VertexShaderOutput input) : SV_TARGET {    
     int2 pixel = input.UV.xy * bordered_resolution;
     float2 uv_per_pixel = 1 / bordered_resolution;
     float2 border = float2(32,32);
@@ -68,7 +65,7 @@ float4 MainPS(VertexShaderOutput input) : COLOR {
     
     bool inside_fill = (pixel.x >= border.x && pixel.x <= border.x + fill_resolution.x && pixel.y >= border.y && pixel.y <= border.y + fill_resolution.y);
     float2 fill_uv = (input.UV.xy - fill_uv_top_left) / fill_uv_total;        
-    float inside = tex2D(fill_sampler, fill_uv).a == 1 && inside_fill;
+    float inside = sample2D(fill_texture, fill_uv).a == 1 && inside_fill;
     
     float sdf = 100000;
     float dist = 0;

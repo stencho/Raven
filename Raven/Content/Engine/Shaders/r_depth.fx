@@ -39,7 +39,7 @@ VertexShaderOutput VertexShaderFunction(in VertexShaderInput input) {
 	return output;
 }
 
-float4 PixelShaderFunction(in VertexShaderOutput input) : SV_Target0 {
+float4 PixelShaderFunction(in VertexShaderOutput input) : SV_TARGET {
     return float4(input.Depth.x,input.Depth.y,input.Depth.z,1);
 }
 

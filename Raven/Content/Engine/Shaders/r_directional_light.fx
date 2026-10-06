@@ -1,11 +1,16 @@
 ﻿#include "lib/general.fx"
 #include "lib/lighting.fx"
 
-sampler NORMAL : register(s0) = sampler_state {
+Texture2D NORMAL;
+SamplerState NORMALSampler : register(s0) = sampler_state {
+    texture = <NORMAL>;
 	MINFILTER = POINT; MAGFILTER = POINT; MIPFILTER = POINT;	
 	ADDRESSU = CLAMP; ADDRESSV = CLAMP;
 };
-sampler DEPTH : register(s1) = sampler_state {
+
+Texture2D DEPTH;
+SamplerState DEPTHSampler : register(s1) = sampler_state {
+    texture = <DEPTH>;
 	MINFILTER = POINT; MAGFILTER = POINT; MIPFILTER = POINT;	
 	ADDRESSU = CLAMP; ADDRESSV = CLAMP;
 };
@@ -40,16 +45,16 @@ float3 light_direction = float3(0,-1,0);
 
 bool fullbright = false;
 
-float4 PS(VSO input) : SV_Target0
+float4 PS(VSO input) : SV_TARGET
 {
     float4 Lighting = float4(0,0,0,1);
     
-    float Depth = tex2D(DEPTH,input.TexCoord).r;
+    float Depth = sample2D(DEPTH,input.TexCoord).r;
     
     // do nothing to lighting at max depth as that's where the skybox lives
     if (Depth == 1) clip(-1);
         
-    float3 Normal = tex2D(NORMAL,input.TexCoord).rgb;
+    float3 Normal = sample2D(NORMAL,input.TexCoord).rgb;
     
 	if (fullbright){
 		Lighting = float4(1,1,1,1);

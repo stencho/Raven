@@ -1,12 +1,20 @@
 ﻿#include "lib/general.fx"
 
-sampler DiffuseSampler = sampler_state { texture = <Diffuse>; };
-sampler LightingSampler = sampler_state { texture = <Lighting>; };
-sampler DepthSampler = sampler_state { texture = <Depth>; };
-sampler NormalSampler = sampler_state { texture = <Normal>; };
-sampler ComposedSampler = sampler_state { texture = <Composed>; };
-sampler OverlaySampler = sampler_state { texture = <Overlay>; };
-sampler OutputSampler = sampler_state { texture = <Output>; };
+Texture2D Diffuse;
+Texture2D Lighting;
+Texture2D Depth;
+Texture2D Normal;
+Texture2D Composed;
+Texture2D Overlay;
+Texture2D Output;
+
+SamplerState DiffuseSampler = sampler_state { texture = <Diffuse>; };
+SamplerState LightingSampler = sampler_state { texture = <Lighting>; };
+SamplerState DepthSampler = sampler_state { texture = <Depth>; };
+SamplerState NormalSampler = sampler_state { texture = <Normal>; };
+SamplerState ComposedSampler = sampler_state { texture = <Composed>; };
+SamplerState OverlaySampler = sampler_state { texture = <Overlay>; };
+SamplerState OutputSampler = sampler_state { texture = <Output>; };
 
 struct VSI {
 	float4 Position : POSITION0;
@@ -19,10 +27,10 @@ struct VSO {
 };
 
 struct ClearPSO {
-    float4 Diffuse : COLOR0;
-    float4 Normal : COLOR1;
-    float Depth : DEPTH0;
-    float4 Lighting : COLOR2;
+    float4 Diffuse :  SV_TARGET0;
+    float4 Normal :   SV_TARGET1;
+    float Depth :     SV_DEPTH;
+    float4 Lighting : SV_TARGET2;
 };
 
 // SCREEN DRAW VARS
@@ -64,11 +72,11 @@ ClearPSO ClearPS() {
 
 int buffer = -1; //debug buffer selection variable
  
-float4 Compose(VSO input) : COLOR {
-    float4 rgba = tex2D(DiffuseSampler, input.UV);           
-    float4 l = tex2D(LightingSampler, input.UV);            
-    float4 d = tex2D(DepthSampler, input.UV);
-    float4 n = tex2D(NormalSampler, input.UV);
+float4 Compose(VSO input) : SV_TARGET {
+    float4 rgba = sample2D(Diffuse, input.UV);           
+    float4 l =    sample2D(Lighting, input.UV);            
+    float4 d =    sample2D(Depth, input.UV);
+    float4 n =    sample2D(Normal, input.UV);
 	
     if (buffer == 0) return rgba;
     else if (buffer == 1) return n; //normals
@@ -77,17 +85,17 @@ float4 Compose(VSO input) : COLOR {
 	else return float4(saturate(rgba.rgb * l.rgb), 1);       
 }
 
-float4 Finalize(VSO input) : COLOR {
-    float4 composed = tex2D(ComposedSampler, input.UV);
-    float4 overlay = tex2D(OverlaySampler, input.UV);
+float4 Finalize(VSO input) : SV_TARGET {
+    float4 composed = sample2D(Composed, input.UV);
+    float4 overlay =  sample2D(Overlay, input.UV);
     
     float3 rgb = lerp(composed.rgb, overlay.rgb, overlay.a);
     
     return float4(rgb, 1);
 }
 
-float4 ToScreen(VSO input) : COLOR {
-    float4 composed = tex2D(OutputSampler, input.UV);     
+float4 ToScreen(VSO input) : SV_TARGET {
+    float4 composed = sample2D(Output, input.UV);     
     return float4((composed.rgb), 1);
 }
 

@@ -19,8 +19,9 @@ float4 inside_color;
 float4 outside_color;
 float4 outline_color; 
 
-sampler2D SDFs : register(s0) {	
-	texture = <SDFTEX>;
+Texture2D SDF;
+sampler2D SDFSampler : register(s0) {	
+	texture = <SDF>;
 	MINFILTER = POINT;
 	MAGFILTER = POINT;
 	MIPFILTER = POINT;
@@ -32,21 +33,29 @@ bool enable_outside_overlay = false;
 bool enable_inside_overlay = false;
 bool enable_outline_overlay = false;
 
-sampler2D OVERLAY_INSIDE : register(s1){	
+Texture2D OVERLAY_INSIDE;
+sampler2D OVERLAY_INSIDESampler : register(s1){	
+    texture = <OVERLAY_INSIDE>;
 	MINFILTER = POINT;
 	MAGFILTER = POINT;
 	MIPFILTER = POINT;
 	ADDRESSU = WRAP;
 	ADDRESSV = WRAP;
 };
-sampler2D OVERLAY_OUTSIDE : register(s2){	
+
+Texture2D OVERLAY_OUTSIDE;
+sampler2D OVERLAY_OUTSIDESampler : register(s2){	
+    texture = <OVERLAY_OUTSIDE>;
 	MINFILTER = POINT;
 	MAGFILTER = POINT;
 	MIPFILTER = POINT;
 	ADDRESSU = WRAP;
 	ADDRESSV = WRAP;
 };
-sampler2D OVERLAY_OUTLINE : register(s3) {	
+
+Texture2D OVERLAY_OUTLINE;
+sampler2D OVERLAY_OUTLINESampler : register(s3) {	
+    texture = <OVERLAY_OUTLINE>;
 	MINFILTER = POINT;
 	MAGFILTER = POINT;
 	MIPFILTER = POINT;
@@ -77,7 +86,7 @@ struct VertexShaderOutput
 };
 struct PSO
 {
-    float4 Color : COLOR0;
+    float4 Color : SV_TARGET;
 	float Depth : SV_Depth;
 };
 
@@ -98,11 +107,11 @@ PSO PS(float4 position : SV_Position, float4 color : COLOR0, float2 TexCoords : 
 {
 	PSO output = (PSO)0;
 
-	float a = (tex2D(SDFs, TexCoords).r);	
+	float a = (sample2D(SDF, TexCoords).r);	
 
-	float4 rgba_inside_overlay = tex2D(OVERLAY_INSIDE, TexCoords * inside_tile_count).rgba; 
-	float4 rgba_outside_overlay = tex2D(OVERLAY_OUTSIDE, TexCoords * outside_tile_count).rgba; 		
-	float4 rgba_outline_overlay = tex2D(OVERLAY_OUTLINE, TexCoords * outline_tile_count).rgba; 
+	float4 rgba_inside_overlay =  sample2D(OVERLAY_INSIDE, TexCoords * inside_tile_count).rgba; 
+	float4 rgba_outside_overlay = sample2D(OVERLAY_OUTSIDE, TexCoords * outside_tile_count).rgba; 		
+	float4 rgba_outline_overlay = sample2D(OVERLAY_OUTLINE, TexCoords * outline_tile_count).rgba; 
 
 	if (!enable_inside_overlay){
 		rgba_inside_overlay = float4(1,1,1,1);

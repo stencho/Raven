@@ -19,7 +19,7 @@ struct VertexShaderOutput
 	float2 texCoord : TEXCOORD0;
 };
 
-float4 MainPS(VertexShaderOutput input) : COLOR0 {
+float4 MainPS(VertexShaderOutput input) : SV_TARGET {
     return pattern_select(1, color_a, color_b, input.texCoord.xy, bottom_right - top_left, pattern_size);
 }
 

@@ -1,5 +1,17 @@
-#define VS_SHADERMODEL vs_3_0
-#define PS_SHADERMODEL ps_3_0
+#if OPENGL
+    #define VS_SHADERMODEL vs_3_0
+    #define PS_SHADERMODEL ps_3_0
+#else
+    #define VS_SHADERMODEL vs_6_0
+    #define PS_SHADERMODEL ps_6_0
+#endif
+
+#if OPENGL
+    #define sample2D(textureName, uv) tex2D(textureName##Sampler, uv)
+#else
+    #define sample2D(textureName, uv) textureName.Sample(textureName##Sampler, uv)
+    #define sampler2D SamplerState
+#endif
 
 float hash21(float2 p)
 {

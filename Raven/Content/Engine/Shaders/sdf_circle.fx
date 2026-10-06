@@ -24,7 +24,7 @@ struct VertexShaderOutput
 	float2 UV : TEXCOORD0;
 };
 
-float4 MainPS(VertexShaderOutput input) : COLOR
+float4 MainPS(VertexShaderOutput input) : SV_TARGET
 {
 	float4 c = input.Color;
 	float2 px = 1/size;

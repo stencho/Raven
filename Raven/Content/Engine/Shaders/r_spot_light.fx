@@ -145,7 +145,7 @@ float RGBADecode(float4 value) {
 }
 
 
-float4 PS(VSO input) : COLOR0 {
+float4 PS(VSO input) : SV_TARGET {
 	input.ScreenPosition /= input.ScreenPosition.w;
 
 	float2 UV = 0.5f * (float2(input.ScreenPosition.x, -input.ScreenPosition.y) + 1.0f);
