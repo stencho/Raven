@@ -129,8 +129,7 @@ public partial class UIButton : IUIForm {
             mdlerp.LerpReverse();
         }
 
-        var mo_max = !mouse_down_on_this ? 1f : 0.5f;
-        var mo_offset = (Vector2.One * 2) * (molerp.Value - float.Clamp(mdlerp.Value, 0f, mo_max));
+        var mo_offset = (Vector2.One * 2) * (molerp.Value - float.Clamp(mdlerp.Value, 0f, 1f));
         
         //shadow
         Draw2D.fill_rect(top_left + mo_offset/2, bottom_right + mo_offset/2, Draw2D.ColorInterpolate(UIColors.Shadow, Color.Transparent, float.Clamp(molerp.Value * 2f, 0.5f, 1f)));
